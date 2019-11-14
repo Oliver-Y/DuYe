@@ -46,7 +46,7 @@ public class SpaceInvaders extends WindowController implements KeyListener {
 		fleet = new Fleet(enemyShips, canvas);
 		
 		playGame = new Text("Click to Start the Game.", WIDTH/2-20, HEIGHT/2-10, canvas);
-		playGame.setSize(30);
+		playGame.setFontSize(30);
 		
 		setup = true;
 
