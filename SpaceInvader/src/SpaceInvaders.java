@@ -14,10 +14,13 @@ public class SpaceInvaders extends WindowController implements KeyListener {
 	//Initialize variables
 	protected Ship ship;
 	protected Fleet fleet;
-	
+	protected boolean setup;
+	protected FilledRect background;
+	protected Text playGame;
+	protected Text score;
 
 	// Remember whether a key is currently depressed
-	private boolean keyDown;
+	protected boolean keyDown;
 
 	public void begin() {
 
@@ -31,21 +34,21 @@ public class SpaceInvaders extends WindowController implements KeyListener {
 		((Frame)c).setResizable(false);
 		*/
 		//Background
-		FilledRect background = new FilledRect(0,0,WIDTH, HEIGHT, canvas);
-		background.setColor(Color.BLACK);
+		background = new FilledRect(0,0,WIDTH, HEIGHT, canvas);
 		
 		//Ship
 		Image shipImage = getImage("ship.png");
-	//	ship = new VisibleImage(shipImage, WIDTH/2-SHIP_WIDTH/2, HEIGHT/2 + SHIP_HEIGHT*5,SHIP_WIDTH, SHIP_HEIGHT, canvas);
-
+		ship = new Ship(shipImage,WIDTH,HEIGHT, fleet, canvas);
+		
 		//create fleet of enemies
 		Image[] enemyShips = {getImage("invader1.png"), getImage("invader2.png"), getImage("invader3.png"),
-
 				getImage("invader4.png"), getImage("invader5.png"), getImage("invader6.png")};
-
 		fleet = new Fleet(enemyShips, canvas);
 		
-		ship = new Ship(shipImage,WIDTH,HEIGHT, fleet, canvas); 
+		playGame = new Text("Click to Start the Game.", WIDTH/2-20, HEIGHT/2-10, canvas);
+		playGame.setSize(30);
+		
+		setup = true;
 
 		requestFocus();
 		addKeyListener(this);
@@ -61,6 +64,13 @@ public class SpaceInvaders extends WindowController implements KeyListener {
 	// Handle the arrow keys by telling the ship to go in the direction of the arrow.
 	public void keyTyped(KeyEvent e)
 	{	
+		if (setup) {
+			
+		}
+		else {
+			background.setColor(Color.BLACK);
+		}
+		
 			if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_UP) {
 			 ship.shoot(); 
 			}		

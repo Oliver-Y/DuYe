@@ -6,8 +6,8 @@ import objectdraw.*;
 public class Fleet extends ActiveObject {
 	
 	//initialize constants
-	private static final int GRID_WIDTH= 58;
-	private static final int GRID_HEIGHT= 50;
+	private static final int GRID_WIDTH = 58;
+	private static final int GRID_HEIGHT = 50;
 	
 	//initialize variables
 	private Alien[][] fleet = new Alien[6][9];
