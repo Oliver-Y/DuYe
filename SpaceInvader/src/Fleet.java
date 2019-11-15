@@ -12,18 +12,22 @@ public class Fleet extends ActiveObject {
 	
 	//initialize variables
 	private VisibleImage[][] fleet = new VisibleImage[6][9];
+	private SpaceInvaders sc;
 	private boolean movingRight = true;
-	private int wait = 1500;
+	private int wait = 900;
 	private int moveCount = 0;
+	private int height = 0;
+	private int score = 0;
 	
 	//initialize fleet
-	public Fleet(Image[] enemyShips, DrawingCanvas canvas) {
+	public Fleet(Image[] enemyShips, SpaceInvaders sc, DrawingCanvas canvas) {
 		for (int i = 0; i < fleet.length; i++) {
 			for (int j = 0; j < fleet[0].length; j++) {
 				fleet[i][j] = new VisibleImage(enemyShips[i], 29+j*GRID_WIDTH, i*GRID_HEIGHT, 
 						ALIEN_SIZE, ALIEN_SIZE, canvas);
 			}
 		}	
+		this.sc = sc;
 		start();
 	}
 	
@@ -53,6 +57,7 @@ public class Fleet extends ActiveObject {
 				fleet[i][j].move(0, GRID_HEIGHT);
 			}
 		}
+		
 	}
 	
 	public boolean checkLaser(FilledRect laser) {
@@ -72,18 +77,35 @@ public class Fleet extends ActiveObject {
 		}
 		return false;
 	}
-
+	
+	private void clear() {
+		for (int i = 0; i < fleet.length; i++) {
+			for (int j = 0; j < fleet[0].length; j++) {
+				fleet[i][j].removeFromCanvas();
+			}
+		}
+	}
+	
+	private boolean fleetDead(int h) {
+		if (height == 8) {
+			clear();
+			sc.gameOver(score);
+			return true;
+		}
+		return false;
+	}
 	
 	public void run() {
 		//move the fleet in snake pattern & increase speed slowly
 		while(true) {
-			
 			if (movingRight) {
 				if (moveCount == 4) {
 					moveDown();
+					height++;
 					moveCount = 0;
 					movingRight = false;
-					wait -= 75;
+					wait -= 100;
+					if (fleetDead(height)) break;
 				}
 				else {
 					moveRight();
@@ -93,16 +115,17 @@ public class Fleet extends ActiveObject {
 			else {
 				if (moveCount == 4) {
 					moveDown();
+					height ++;
 					moveCount = 0;
 					movingRight = true;
-					wait -= 75;
+					wait -= 100;
+					if (fleetDead(height)) break;
 				}
 				else {
 					moveLeft();
 					moveCount ++;
 				}
 			}
-
 			pause(wait);
 		}
 	}

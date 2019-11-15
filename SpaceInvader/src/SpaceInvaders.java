@@ -17,7 +17,7 @@ public class SpaceInvaders extends WindowController implements KeyListener {
 	protected boolean setup;
 	protected FilledRect background;
 	protected Text playGame;
-	protected Text scoreText;
+	protected Text playAgain;
 	protected int score;
 
 	// Remember whether a key is currently depressed
@@ -41,6 +41,11 @@ public class SpaceInvaders extends WindowController implements KeyListener {
 		playGame = new Text("Click to Start the Game.", WIDTH/4+30, HEIGHT/2-40, canvas);
 		playGame.setFontSize(30);
 		
+		playAgain = new Text("Click to play again.", WIDTH/4+20, HEIGHT/2 + 60, canvas);
+		playAgain.setFontSize(15);
+		playAgain.setColor(Color.red);
+		playAgain.hide();
+		
 		setup = true;
 
 		requestFocus();
@@ -55,11 +60,12 @@ public class SpaceInvaders extends WindowController implements KeyListener {
 			background.setColor(Color.BLACK);
 			
 			playGame.hide();
+			playAgain.hide();
 			
 			//create fleet of enemies
 			Image[] enemyShips = {getImage("invader1.png"), getImage("invader2.png"), getImage("invader3.png"),
 					getImage("invader4.png"), getImage("invader5.png"), getImage("invader6.png")};
-			fleet = new Fleet(enemyShips, canvas);
+			fleet = new Fleet(enemyShips, this, canvas);
 			
 			//Ship
 			Image shipImage = getImage("ship.png");
@@ -118,6 +124,15 @@ public class SpaceInvaders extends WindowController implements KeyListener {
 		keyDown = true;
 	}
 	
+	public void gameOver(int score) {
+		setup = false;
+		playGame.setText("Game over! Yourscore: " + score + "/540 points.");
+		playGame.moveTo(WIDTH/4, HEIGHT/2-40);
+		playGame.setColor(Color.red);
+		playGame.show();
+		
+		playAgain.show();
+	}
 	
     public static void main(String[] args) { 
         new SpaceInvaders().startController(WIDTH, HEIGHT); 
