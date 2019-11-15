@@ -65,11 +65,12 @@ public class SpaceInvaders extends WindowController implements KeyListener {
 			//create fleet of enemies
 			Image[] enemyShips = {getImage("invader1.png"), getImage("invader2.png"), getImage("invader3.png"),
 					getImage("invader4.png"), getImage("invader5.png"), getImage("invader6.png")};
-			fleet = new Fleet(enemyShips, this, canvas);
+			fleet = new Fleet(enemyShips, this, canvas,ship);
 			
 			//Ship
 			Image shipImage = getImage("ship.png");
-			ship = new Ship(shipImage,WIDTH,HEIGHT, fleet, canvas);
+			ship = new Ship(shipImage,WIDTH,HEIGHT, fleet, canvas,this);
+			fleet.addShip(ship);
 		}
 	}
 	
@@ -124,13 +125,14 @@ public class SpaceInvaders extends WindowController implements KeyListener {
 		keyDown = true;
 	}
 	
-	public void gameOver(int score) {
+	public void gameOver() {
 		setup = false;
-		playGame.setText("Game over! Yourscore: " + score + "/540 points.");
+		ship.clear(); 
+		fleet.clear(); 
+		playGame.setText("Game over! Your score: " + score + "/540 points.");
 		playGame.moveTo(WIDTH/4, HEIGHT/2-40);
 		playGame.setColor(Color.red);
 		playGame.show();
-		
 		playAgain.show();
 	}
 	

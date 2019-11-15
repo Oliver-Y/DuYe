@@ -17,10 +17,13 @@ public class Fleet extends ActiveObject {
 	private int wait = 900;
 	private int moveCount = 0;
 	private int height = 0;
-	private int score = 0;
+	private int[] rowCount = {5,5,5,5,5,5,5,5,5};
+	private Ship spaceship; 
+	private DrawingCanvas canvas; 
+	private boolean run; 
 	
 	//initialize fleet
-	public Fleet(Image[] enemyShips, SpaceInvaders sc, DrawingCanvas canvas) {
+	public Fleet(Image[] enemyShips, SpaceInvaders sc, DrawingCanvas canvas,Ship ship) {
 		for (int i = 0; i < fleet.length; i++) {
 			for (int j = 0; j < fleet[0].length; j++) {
 				fleet[i][j] = new VisibleImage(enemyShips[i], 29+j*GRID_WIDTH, i*GRID_HEIGHT, 
@@ -28,11 +31,27 @@ public class Fleet extends ActiveObject {
 			}
 		}	
 		this.sc = sc;
+		this.canvas = canvas; 
+		this.spaceship = ship; 
+		run = true; 
 		start();
 	}
 	
+	
 	public void shoot() {
-		
+		//Chooses a random collumn;
+		int i = (int)(Math.random() * 5); 
+		while(rowCount[i] == 0) {
+			i = (int)(Math.random() * 5); 
+		}
+		//this is the alien that is suppose to shoot
+		VisibleImage temp = fleet[rowCount[i]][i]; 
+		new Laser(temp.getX() + ALIEN_SIZE/2, temp.getY() + ALIEN_SIZE, false, this,spaceship,canvas);
+		//rowCount[i]--; 	
+	}
+	
+	public void addShip(Ship s) {
+		this.spaceship = s;
 	}
 
 	private void moveLeft() {
@@ -60,13 +79,16 @@ public class Fleet extends ActiveObject {
 		
 	}
 	
-	public boolean checkLaser(FilledRect laser) {
+	public boolean checkLaser(Laser laser) {
 		for (int i = 0; i < fleet.length; i++) {
 			for (int j = 0; j < fleet[0].length; j++) {
-				if (fleet[i][j].overlaps(laser)) {
+				if (fleet[i][j].overlaps(laser.getPic()) && laser.fromShip()) {
 					
 					try {
 						fleet[i][j].removeFromCanvas();
+						//Subtracting 2 extra times. 
+						rowCount[i]--; 
+						System.out.println("subtracts" + i + "row" + rowCount[i]); 
 						return true;
 					}
 					catch (IllegalStateException e) {
@@ -78,26 +100,35 @@ public class Fleet extends ActiveObject {
 		return false;
 	}
 	
-	private void clear() {
+	public void clear() {
 		for (int i = 0; i < fleet.length; i++) {
 			for (int j = 0; j < fleet[0].length; j++) {
-				fleet[i][j].removeFromCanvas();
+				try {
+					fleet[i][j].removeFromCanvas();
+				}
+				catch(IllegalStateException e) {
+					
+				}
 			}
 		}
+		run = false; 
 	}
 	
 	private boolean fleetDead(int h) {
 		if (height == 8) {
 			clear();
-			sc.gameOver(score);
+			sc.gameOver();
 			return true;
 		}
 		return false;
 	}
+	public void addScore(int x) {
+		sc.score += x; 
+	}
 	
 	public void run() {
 		//move the fleet in snake pattern & increase speed slowly
-		while(true) {
+		while(run) {
 			if (movingRight) {
 				if (moveCount == 4) {
 					moveDown();
@@ -126,7 +157,9 @@ public class Fleet extends ActiveObject {
 					moveCount ++;
 				}
 			}
-			pause(wait);
+			pause(wait/2);
+			shoot();
+			pause(wait/2); 
 		}
 	}
 }

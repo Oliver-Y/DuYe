@@ -12,13 +12,14 @@ public class Ship extends ActiveObject {
 	public boolean keyPressedR = false; 
 	public boolean keyPressedL = false; 
 	public boolean keyPressedS = false; 
-	
+	private SpaceInvaders window; 
 
 	//Constructor should take an Image and starting position 
-	public Ship(Image i, int WIDTH, int HEIGHT,Fleet f,DrawingCanvas canvas) {
+	public Ship(Image i, int WIDTH, int HEIGHT,Fleet f,DrawingCanvas canvas,SpaceInvaders w) {
 		ship = new VisibleImage(i, WIDTH/2-SHIP_WIDTH/2, HEIGHT/2 + SHIP_HEIGHT*5,SHIP_WIDTH, SHIP_HEIGHT, canvas);
 		c = canvas;
 		fleet = f;
+		window = w;
 		start();
 	}
 	public void set_R(boolean b) {
@@ -27,11 +28,6 @@ public class Ship extends ActiveObject {
 	public void set_L(boolean b) {
 		keyPressedL = b;
 	}
-
-//	public void set_S(boolean b) {
-//		keyPressedS = b;
-//	}
-//	
 	public void moveRight() {
 		ship.move(STEP,0);
 	}
@@ -39,8 +35,31 @@ public class Ship extends ActiveObject {
 		ship.move(-STEP,0); 
 	}
 	public void shoot() {
-		new Laser(ship.getX()+SHIP_WIDTH/2,ship.getY()+ 5, true, fleet, c);
+		new Laser(ship.getX()+SHIP_WIDTH/2,ship.getY()+ 5, true, fleet,this, c);
 	}
+	
+	public void clear() {
+		try {
+			ship.removeFromCanvas(); 
+		}
+		catch(IllegalStateException e){
+			
+		}
+	}
+	
+	public boolean checkLaser(Laser s) {
+		if(ship.overlaps(s.getPic()) && !s.fromShip()) {
+			ship.removeFromCanvas();
+			window.gameOver();
+			return true; 
+		}
+		return false; 
+	}
+	
+	public void addFleet(Fleet f) {
+		fleet = f;
+	}
+	
 	public void run() {
 		while(true) {
 
