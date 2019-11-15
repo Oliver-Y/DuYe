@@ -6,20 +6,22 @@ import objectdraw.*;
 public class Fleet extends ActiveObject {
 	
 	//initialize constants
-	private static final int GRID_WIDTH = 58;
-	private static final int GRID_HEIGHT = 50;
+	private static final int GRID_WIDTH= 58;
+	private static final int GRID_HEIGHT= 50;
+	private static final int ALIEN_SIZE= 40;
 	
 	//initialize variables
-	private Alien[][] fleet = new Alien[6][9];
-	private boolean movingLeft = false;
+	private VisibleImage[][] fleet = new VisibleImage[6][9];
 	private boolean movingRight = true;
-	private int wait = 1000;
+	private int wait = 1500;
+	private int moveCount = 0;
 	
 	//initialize fleet
 	public Fleet(Image[] enemyShips, DrawingCanvas canvas) {
 		for (int i = 0; i < fleet.length; i++) {
 			for (int j = 0; j < fleet[0].length; j++) {
-				fleet[i][j] = new Alien(enemyShips[i], 29+j*GRID_WIDTH, i*GRID_HEIGHT, canvas);
+				fleet[i][j] = new VisibleImage(enemyShips[i], 29+j*GRID_WIDTH, i*GRID_HEIGHT, 
+						ALIEN_SIZE, ALIEN_SIZE, canvas);
 			}
 		}	
 		start();
@@ -28,69 +30,80 @@ public class Fleet extends ActiveObject {
 	public void shoot() {
 		
 	}
-	
-	
-	public void run() {
-		//move the fleet in snake pattern & increase speed every time when fleet moves down
-		while(true) {
-			if (movingRight) {
-				if (fleet[0][8].getX() == 29+12*GRID_WIDTH) {
-					moveDown();
-					movingRight = false;
-					movingLeft = true;
-				} 
-				else {
-					moveRight();
-				}
+
+	private void moveLeft() {
+		for (int i = 0; i < fleet.length; i++) {
+			for (int j = 0; j < fleet[0].length; j++) {
+				fleet[i][j].move(-GRID_WIDTH, 0);
 			}
-			else {
-				if (fleet[0][0].getX() == 29) {
-					moveDown();
-					wait -= 250;
-					movingLeft = false;
-					movingRight = true;
-				} 
-				else {
-					moveLeft();
-				}
+		}
+	}
+
+	private void moveRight() {
+		for (int i = 0; i < fleet.length; i++) {
+			for (int j = 0; j < fleet[0].length; j++) {
+				fleet[i][j].move(GRID_WIDTH, 0);
 			}
-			pause(wait);
 		}
 	}
 
 	private void moveDown() {
 		for (int i = 0; i < fleet.length; i++) {
 			for (int j = 0; j < fleet[0].length; j++) {
-				fleet[i][j].moveDown();
+				fleet[i][j].move(0, GRID_HEIGHT);
 			}
 		}
 	}
-
-
-	private void moveRight() {
-		for (int i = 0; i < fleet.length; i++) {
-			for (int j = 0; j < fleet[0].length; j++) {
-				fleet[i][j].moveRight();
-			}
-		}
-	}
-
-	private void moveLeft() {
-		for (int i = 0; i < fleet.length; i++) {
-			for (int j = 0; j < fleet[0].length; j++) {
-				fleet[i][j].moveLeft();
-			}
-		}
-	}
-	
 	
 	public boolean checkLaser(FilledRect laser) {
 		for (int i = 0; i < fleet.length; i++) {
 			for (int j = 0; j < fleet[0].length; j++) {
-				if (fleet[i][j].checkKill(laser)) return true;
+				if (fleet[i][j].overlaps(laser)) {
+					
+					try {
+						fleet[i][j].removeFromCanvas();
+						return true;
+					}
+					catch (IllegalStateException e) {
+						return true;
+					}
+				}
 			}
 		}
 		return false;
 	}
 
+	
+	public void run() {
+		//move the fleet in snake pattern & increase speed slowly
+		while(true) {
+			
+			if (movingRight) {
+				if (moveCount == 4) {
+					moveDown();
+					moveCount = 0;
+					movingRight = false;
+					wait -= 75;
+				}
+				else {
+					moveRight();
+					moveCount ++;
+				}
+			}
+			else {
+				if (moveCount == 4) {
+					moveDown();
+					moveCount = 0;
+					movingRight = true;
+					wait -= 75;
+				}
+				else {
+					moveLeft();
+					moveCount ++;
+				}
+			}
+
+			pause(wait);
+		}
+	}
 }

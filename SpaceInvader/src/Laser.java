@@ -1,11 +1,10 @@
 import java.awt.Color;
-import java.awt.Image;
 
 import objectdraw.*;
 public class Laser extends ActiveObject {
 	FilledRect laser; 
-	private final double laser_len = 10; 
-	private final double laser_width = 5; 
+	private static final int LASER_LENGTH = 9; 
+	private static final int LASER_WIDTH = 3; 
 	private double speed; 
 	DrawingCanvas c; 
 	private Fleet fleet; 
@@ -15,17 +14,17 @@ public class Laser extends ActiveObject {
 		
 	public Laser(double start_x, double start_y, boolean fromShip, Fleet f, DrawingCanvas canvas) {
 		//laser = new VisibleImage(i, start_x, start_y, laser_width,laser_len,canvas);
-		laser = new FilledRect(start_x,start_y,laser_width,laser_len,canvas); 
+		laser = new FilledRect(start_x,start_y, LASER_WIDTH, LASER_LENGTH, canvas); 
 		//spaceship = s; 
 		fleet = f;
 		this.fromShip = fromShip;
 		if (fromShip) {
 			laser.setColor(Color.WHITE);
-			speed = -4;
+			speed = -3;
 		} 
 		else {
 			laser.setColor(Color.WHITE);
-			speed = 4;
+			speed = 3;
 		}
 		c = canvas; 
 		start(); 
@@ -51,7 +50,8 @@ public class Laser extends ActiveObject {
 				break;
 			}
 			
-			pause(20); 
+			
+			pause(10); 
 		}
 		if (!laserRemoved) laser.removeFromCanvas(); 
 	}

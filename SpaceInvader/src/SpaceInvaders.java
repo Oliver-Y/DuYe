@@ -9,7 +9,7 @@ public class SpaceInvaders extends WindowController implements KeyListener {
 
 	// Constants for the window
 	private static final int HEIGHT= 800;
-	private static final int WIDTH = 800;	
+	private static final int WIDTH = 800;
 	
 	//Initialize variables
 	protected Ship ship;
@@ -17,7 +17,8 @@ public class SpaceInvaders extends WindowController implements KeyListener {
 	protected boolean setup;
 	protected FilledRect background;
 	protected Text playGame;
-	protected Text score;
+	protected Text scoreText;
+	protected int score;
 
 	// Remember whether a key is currently depressed
 	protected boolean keyDown;
@@ -25,7 +26,6 @@ public class SpaceInvaders extends WindowController implements KeyListener {
 	public void begin() {
 
 		/* This code will make it so the window cannot be resized */
-
 		/*
 		Container c = this;
 		while(! (c instanceof Frame)) {
@@ -33,19 +33,12 @@ public class SpaceInvaders extends WindowController implements KeyListener {
 		}
 		((Frame)c).setResizable(false);
 		*/
+		
 		//Background
 		background = new FilledRect(0,0,WIDTH, HEIGHT, canvas);
+		background.setColor(Color.WHITE);
 		
-		//Ship
-		Image shipImage = getImage("ship.png");
-		ship = new Ship(shipImage,WIDTH,HEIGHT, fleet, canvas);
-		
-		//create fleet of enemies
-		Image[] enemyShips = {getImage("invader1.png"), getImage("invader2.png"), getImage("invader3.png"),
-				getImage("invader4.png"), getImage("invader5.png"), getImage("invader6.png")};
-		fleet = new Fleet(enemyShips, canvas);
-		
-		playGame = new Text("Click to Start the Game.", WIDTH/2-20, HEIGHT/2-10, canvas);
+		playGame = new Text("Click to Start the Game.", WIDTH/4+30, HEIGHT/2-40, canvas);
 		playGame.setFontSize(30);
 		
 		setup = true;
@@ -56,9 +49,22 @@ public class SpaceInvaders extends WindowController implements KeyListener {
 
 	}
 
-
-	public void onMouseClick(Location l) {
-
+	public void onMousePress(Location l) {
+		if (setup) {
+			setup = false;
+			background.setColor(Color.BLACK);
+			
+			playGame.hide();
+			
+			//create fleet of enemies
+			Image[] enemyShips = {getImage("invader1.png"), getImage("invader2.png"), getImage("invader3.png"),
+					getImage("invader4.png"), getImage("invader5.png"), getImage("invader6.png")};
+			fleet = new Fleet(enemyShips, canvas);
+			
+			//Ship
+			Image shipImage = getImage("ship.png");
+			ship = new Ship(shipImage,WIDTH,HEIGHT, fleet, canvas);
+		}
 	}
 	
 	// Handle the arrow keys by telling the ship to go in the direction of the arrow.
@@ -68,22 +74,19 @@ public class SpaceInvaders extends WindowController implements KeyListener {
 			
 		}
 		else {
-			background.setColor(Color.BLACK);
+			if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_UP) {
+				 ship.shoot(); 
+				}		
+				 if (e.getKeyCode() == KeyEvent.VK_LEFT ) {
+					ship.set_L(true);
+
+				} 
+				 else if ( e.getKeyCode() == KeyEvent.VK_RIGHT ) {
+					ship.set_R(true); 
+		        } 
 		}
 		
-			if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_UP) {
-			 ship.shoot(); 
-			}		
-			 if (e.getKeyCode() == KeyEvent.VK_LEFT ) {
-				ship.set_L(true);
 
-			} 
-			 else if ( e.getKeyCode() == KeyEvent.VK_RIGHT ) {
-				ship.set_R(true); 
-	        } 
-			/* else if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_UP) {
-				 ship.set_S(true); 
-			 }*/
 	}
 
 
@@ -113,12 +116,11 @@ public class SpaceInvaders extends WindowController implements KeyListener {
 			keyTyped(e);
 		}
 		keyDown = true;
-
 	}
+	
 	
     public static void main(String[] args) { 
         new SpaceInvaders().startController(WIDTH, HEIGHT); 
-
 	}
 
 	

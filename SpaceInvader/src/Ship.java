@@ -8,7 +8,7 @@ public class Ship extends ActiveObject {
 	Fleet fleet;
 	private static final int SHIP_WIDTH = 50;
 	private static final int SHIP_HEIGHT = 50;
-	private final int step = 5; 
+	private static final int STEP = 5; 
 	public boolean keyPressedR = false; 
 	public boolean keyPressedL = false; 
 	public boolean keyPressedS = false; 
@@ -33,10 +33,10 @@ public class Ship extends ActiveObject {
 //	}
 //	
 	public void moveRight() {
-		ship.move(step,0);
+		ship.move(STEP,0);
 	}
 	public void moveLeft() {
-		ship.move(-step,0); 
+		ship.move(-STEP,0); 
 	}
 	public void shoot() {
 		new Laser(ship.getX()+SHIP_WIDTH/2,ship.getY()+ 5, true, fleet, c);
