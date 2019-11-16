@@ -39,12 +39,13 @@ public class Fleet extends ActiveObject {
 	
 	
 	public void shoot() {
-		//Chooses a random collumn;
-		int i = (int)(Math.random() * 5); 
-		while(rowCount[i] == 0) {
-			i = (int)(Math.random() * 5); 
+		//Chooses a random column;
+		int i = (int)(Math.random() * 9); 
+		while(rowCount[i] <= 0) {
+			i = (int)(Math.random() * 9); 
 		}
-		//this is the alien that is suppose to shoot
+		
+		//This is the alien that is suppose to shoot
 		VisibleImage temp = fleet[rowCount[i]][i]; 
 		new Laser(temp.getX() + ALIEN_SIZE/2, temp.getY() + ALIEN_SIZE, false, this,spaceship,canvas);
 		//rowCount[i]--; 	
@@ -87,8 +88,8 @@ public class Fleet extends ActiveObject {
 					try {
 						fleet[i][j].removeFromCanvas();
 						//Subtracting 2 extra times. 
-						rowCount[i]--; 
-						System.out.println("subtracts" + i + "row" + rowCount[i]); 
+						rowCount[j]--; 
+					//	System.out.println("subtracts row " + i + " column " + j + " least row " + rowCount[j]); 
 						return true;
 					}
 					catch (IllegalStateException e) {
@@ -121,6 +122,15 @@ public class Fleet extends ActiveObject {
 			return true;
 		}
 		return false;
+	}
+	
+	private boolean checkWin() {
+		for(int i = 0; i < fleet[0].length; ++i) {
+				if(rowCount[i] != -1) {
+					return false; 
+				}
+		}
+		return true;
 	}
 	public void addScore(int x) {
 		sc.score += x; 
@@ -159,7 +169,14 @@ public class Fleet extends ActiveObject {
 			}
 			pause(wait/2);
 			shoot();
+			for(int i = 0; i < fleet[0].length; ++i) {
+				System.out.println(rowCount[i] + " ");
+			}
+			System.out.println(); 
 			pause(wait/2); 
+			if(checkWin()) {
+				sc.win(); 
+			}
 		}
 	}
 }

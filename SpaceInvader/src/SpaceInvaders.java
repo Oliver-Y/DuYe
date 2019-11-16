@@ -126,14 +126,29 @@ public class SpaceInvaders extends WindowController implements KeyListener {
 	}
 	
 	public void gameOver() {
-		setup = false;
+		setup = true;
 		ship.clear(); 
 		fleet.clear(); 
 		playGame.setText("Game over! Your score: " + score + "/540 points.");
-		playGame.moveTo(WIDTH/4, HEIGHT/2-40);
+		playGame.moveTo(WIDTH/4 - 50, HEIGHT/2-40);
 		playGame.setColor(Color.red);
 		playGame.show();
+		playAgain.setColor(Color.red);
 		playAgain.show();
+		score = 0; 
+	}
+	
+	public void win() {
+		setup = true;
+		ship.clear(); 
+		fleet.clear(); 
+		playGame.setText("Congrats bro Your score: " + score + "/540 points.");
+		playGame.moveTo(WIDTH/4 - 50, HEIGHT/2-40);
+		playGame.setColor(Color.green);
+		playGame.show();
+		playAgain.setColor(Color.green);
+		playAgain.show();
+		score = 0; 
 	}
 	
     public static void main(String[] args) { 

@@ -41,10 +41,10 @@ public class Laser extends ActiveObject {
 		return laser; 
 	}
 	
+	
 	public void run() {
 		while((laser.getX() >= 0 && laser.getX() <= c.getWidth()) && (laser.getY() <= c.getHeight() && laser.getY() >= 0)) {
 			laser.move(0,speed); 
-			
 			//check to see if laser overlaps with Spaceship or Alien
 			//Which means laser has to have the Visible Image of all aliens along with the ship to check. 
 			//fleet.checkLaser(laser); // Overlaps   
