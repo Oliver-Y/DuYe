@@ -11,16 +11,21 @@ public class Fleet extends ActiveObject {
 	private static final int ALIEN_SIZE= 40;
 	
 	//initialize variables
-	private VisibleImage[][] fleet = new VisibleImage[6][9];
-	private SpaceInvaders sc;
+
 	private boolean movingRight = true;
 	private int wait = 900;
 	private int moveCount = 0;
 	private int height = 0;
+	
+	//Keeps track of how many aliens left in each column
 	private int[] rowCount = {5,5,5,5,5,5,5,5,5};
+	//Other objects
+	private VisibleImage[][] fleet = new VisibleImage[6][9];
+	private SpaceInvaders sc;
 	private Ship spaceship; 
 	private DrawingCanvas canvas; 
 	private boolean run; 
+	private wildGnozz gnozz; 
 	
 	//initialize fleet
 	public Fleet(Image[] enemyShips, SpaceInvaders sc, DrawingCanvas canvas,Ship ship) {
@@ -36,6 +41,9 @@ public class Fleet extends ActiveObject {
 		run = true; 
 		start();
 	}
+	public void addGnozz(wildGnozz g) {
+		gnozz = g;
+	}
 	
 	
 	public void shoot() {
@@ -45,10 +53,10 @@ public class Fleet extends ActiveObject {
 			i = (int)(Math.random() * 9); 
 		}
 		
-		//This is the alien that is suppose to shoot
+		//Chooses the alien that is suppose to shoot
 		VisibleImage temp = fleet[rowCount[i]][i]; 
 		new Laser(temp.getX() + ALIEN_SIZE/2, temp.getY() + ALIEN_SIZE, false, this,spaceship,canvas);
-		//rowCount[i]--; 	
+		
 	}
 	
 	public void addShip(Ship s) {
@@ -79,7 +87,7 @@ public class Fleet extends ActiveObject {
 		}
 		
 	}
-	
+	//Checking to see collision with laser
 	public boolean checkLaser(Laser laser) {
 		for (int i = 0; i < fleet.length; i++) {
 			for (int j = 0; j < fleet[0].length; j++) {
@@ -87,9 +95,8 @@ public class Fleet extends ActiveObject {
 					
 					try {
 						fleet[i][j].removeFromCanvas();
-						//Subtracting 2 extra times. 
+						//Decrement the row
 						rowCount[j]--; 
-					//	System.out.println("subtracts row " + i + " column " + j + " least row " + rowCount[j]); 
 						return true;
 					}
 					catch (IllegalStateException e) {
@@ -114,7 +121,7 @@ public class Fleet extends ActiveObject {
 		}
 		run = false; 
 	}
-	
+	//Checking alive
 	private boolean fleetDead(int h) {
 		if (height == 8) {
 			clear();
@@ -137,6 +144,7 @@ public class Fleet extends ActiveObject {
 	}
 	
 	public void run() {
+		pause(1000); 
 		//move the fleet in snake pattern & increase speed slowly
 		while(run) {
 			if (movingRight) {
@@ -169,10 +177,6 @@ public class Fleet extends ActiveObject {
 			}
 			pause(wait/2);
 			shoot();
-			for(int i = 0; i < fleet[0].length; ++i) {
-				System.out.println(rowCount[i] + " ");
-			}
-			System.out.println(); 
 			pause(wait/2); 
 			if(checkWin()) {
 				sc.win(); 
