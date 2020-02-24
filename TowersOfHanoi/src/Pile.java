@@ -67,4 +67,8 @@ public class Pile {
 			return true;
 		} else return (d.getSize()<=disks.peek().getSize());
 	}
+	
+	public int getSize(){
+		return disks.size(); 
+	}
 }

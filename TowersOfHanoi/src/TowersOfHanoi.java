@@ -82,6 +82,10 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 	
 	//Win condition met
 	public void win() {
+	public boolean win() {
+		if(rPile.getSize() == 7)
+			return true;
+		return false;
 
 	}
 	
