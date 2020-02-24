@@ -24,6 +24,7 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 	private static final int HEIGHT= 800;
 	private static final int WIDTH = 800;
 	
+	
 	//Initialize Disks 
 	public void begin() {
 		base = new FramedRect(50, 650, 700, 50, canvas);
@@ -32,7 +33,7 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 		lPile = new Pile(90, numDisks, canvas);
 		mPile = new Pile(300, 0, canvas);
 		rPile = new Pile(510, 0, canvas);
-		
+				
 	}
 
 	public void onMousePress(Location l) {
@@ -61,6 +62,9 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 			else selected.getPile().addTop(selected);;
 		}
 		selected = null;
+		if(win()) {
+			setWinState(); 
+		}
 	}
 	
 	// Handle the arrow keys by telling the ship to go in the direction of the arrow.
@@ -81,9 +85,8 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 	
 	
 	//Win condition met
-	public void win() {
 	public boolean win() {
-		if(rPile.getSize() == 7)
+		if(rPile.getSize() == 2)
 			return true;
 		return false;
 
@@ -91,6 +94,15 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 	
 	public void setDisk(int n) {
 		numDisks = n;
+	}
+	
+	public void setWinState() {
+		new Text("Congrabalations, you've won",canvas.getHeight()/4,canvas.getWidth()/4,canvas); 
+		//Each will do something with disks on each pile?
+		lPile.wColor(); 
+		mPile.wColor(); 
+		rPile.wColor(); 
+		
 	}
 	
     public static void main(String[] args) { 
@@ -107,7 +119,7 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 //    	}
 //    	s.close();
         TowersOfHanoi toh = new TowersOfHanoi();
-        toh.setDisk(7);
+        toh.setDisk(2);
         toh.startController(WIDTH, HEIGHT); 
 	}
 
