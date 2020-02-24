@@ -1,6 +1,7 @@
 import objectdraw.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Stack;
@@ -14,8 +15,7 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 	//Other initializations
 	private int numDisks;
 	private FramedRect base;
-	private ArrayList<Integer[]> moves;
-	private Integer[] tempMove= {0,0};
+	private String[] tempMove= {"0","0"};
 	private Location current;
 	private Disk selected;
 	private FramedRect save;
@@ -26,6 +26,7 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 	private Text resetText;
 	private FramedRect autoPlay;
 	private Text APText;
+	private MoveHistory memory;
 
 	//Constants for the window
 	private static final int HEIGHT= 800;
@@ -55,10 +56,22 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 		lPile = new Pile(90, numDisks, canvas);
 		mPile = new Pile(300, 0, canvas);
 		rPile = new Pile(510, 0, canvas);
-
+		
+		memory = new MoveHistory(lPile, mPile, rPile);
 	}
 
 	public void onMouseClick(Location l) {
+		if (save.contains(l)) {
+			try {
+				memory.save();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (undo.contains(l)) {
+			memory.undo();
+		}
+		
 
 	}
 
@@ -66,18 +79,18 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 		current = l;
 		if (lPile.diskContains(l)) {
 			selected = lPile.removeTop();
-			tempMove[1] = 1;
-			tempMove[2] = 1;
+			tempMove[0] = "l";
+			tempMove[1] = "l";
 		}
 		else if (mPile.diskContains(l)) {
 			selected = mPile.removeTop();
-			tempMove[1] = 2;
-			tempMove[2] = 2;
+			tempMove[0] = "m";
+			tempMove[1] = "m";
 		}
 		else if (rPile.diskContains(l)) {
 			selected = rPile.removeTop();
-			tempMove[1] = 3;
-			tempMove[2] = 3;
+			tempMove[0] = "r";
+			tempMove[1] = "r";
 		}
 		else selected = null;
 	}
@@ -95,18 +108,23 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 		if (selected != null) {
 			if (lPile.contains(l) && lPile.canAdd(selected)) {
 				lPile.addTop(selected);
-				tempMove[2] = 1;
-				moves.add(tempMove);
+				tempMove[1] = "l";
+				if (tempMove[0] != tempMove[1]) {
+					memory.addMove(tempMove);
+				}
 			}
 			else if (mPile.contains(l)&& mPile.canAdd(selected)) {
 				mPile.addTop(selected);
-				tempMove[2] = 2;
-				moves.add(tempMove);
-			}
+				tempMove[1] = "m";
+				if (tempMove[0] != tempMove[1]) {
+					memory.addMove(tempMove);
+				}			}
 			else if (rPile.contains(l)&& rPile.canAdd(selected)) {
 				rPile.addTop(selected);
-				tempMove[2] = 3;
-				moves.add(tempMove);
+				tempMove[1] = "r";
+				if (tempMove[0] != tempMove[1]) {
+					memory.addMove(tempMove);
+				}
 			}
 			else selected.getPile().addTop(selected);;
 		}
