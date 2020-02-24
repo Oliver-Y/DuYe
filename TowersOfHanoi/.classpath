@@ -6,6 +6,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Users/oye20/Documents/GitHub/datastructures/objectdrawV1.1.2.jar"/>
+	<classpathentry kind="lib" path="/Users/ydu20/Documents/GitHub/DuYe/TowersOfHanoi/src/objectdraw.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
