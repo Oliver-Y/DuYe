@@ -14,9 +14,12 @@ public class Pile {
 	private Stack<Disk> disks;
 	private int topY;
 	private int center;
+	private DrawingCanvas canvas; 
 	
 	public Pile(int x, int numDisks, DrawingCanvas c) {
 		
+		canvas = c; 
+
 		//Cursor detector for dragging purposes
 		dragRegion = new FramedRect(x+25, TOP, 150, HEIGHT, c);
 		dragRegion.hide();
@@ -66,5 +69,17 @@ public class Pile {
 		if (disks.size() == 0) {
 			return true;
 		} else return (d.getSize()<=disks.peek().getSize());
+	}
+	
+	public void wColor() {
+		while(disks.size() > 0) {
+			Disk temp = disks.pop(); 
+			temp.getDiskRect().setColor(new Color((int)(Math.random() * 255),(int)(Math.random() * 255),(int)(Math.random() * 255))); 
+			temp.floatAnimation(); 
+		}
+	}
+	
+	public int getSize(){
+		return disks.size(); 
 	}
 }
