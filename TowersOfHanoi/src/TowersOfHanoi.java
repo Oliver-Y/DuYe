@@ -107,7 +107,7 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 //    	}
 //    	s.close();
         TowersOfHanoi toh = new TowersOfHanoi();
-        toh.setDisk(4);
+        toh.setDisk(7);
         toh.startController(WIDTH, HEIGHT); 
 	}
 
