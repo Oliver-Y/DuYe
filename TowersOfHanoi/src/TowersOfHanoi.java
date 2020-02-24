@@ -8,11 +8,7 @@ import java.util.Scanner;
 import java.util.Stack;
 
 public class TowersOfHanoi extends WindowController implements KeyListener {
-	//Three stacks of disks because three poles
-//	private Stack<Disk> left = new Stack<Disk>();
-//	private Stack<Disk> middle = new Stack<Disk>();
-//	private Stack<Disk> right = new Stack<Disk>();
-	
+
 	private Pile lPile;
 	private Pile mPile;
 	private Pile rPile;
