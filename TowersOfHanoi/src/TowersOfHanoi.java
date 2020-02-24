@@ -20,11 +20,9 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 	//Other initializations
 	private int numDisks;
 	private FramedRect base;
-	private FramedRect lPole;
-	private FramedRect mPole;
-	private FramedRect rPole;
 	private ArrayList<Integer[]> moves;
-
+	private Location current;
+	private Disk selected;
 	
 	//Constants for the window
 	private static final int HEIGHT= 800;
@@ -33,10 +31,8 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 	//Initialize Disks 
 	public void begin() {
 		base = new FramedRect(50, 650, 700, 50, canvas);
-//		lPole = new FramedRect(185, 350, 10, 300, canvas);
-//		mPole = new FramedRect(395, 350, 10, 300, canvas);
-//		rPole = new FramedRect(605, 350, 10, 300, canvas);
-//		
+		
+		//Initialize Piles
 		lPile = new Pile(90, numDisks, canvas);
 		mPile = new Pile(300, 0, canvas);
 		rPile = new Pile(510, 0, canvas);
@@ -44,7 +40,31 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 	}
 
 	public void onMousePress(Location l) {
+		current = l;
+		if (lPile.diskContains(l)) selected = lPile.removeTop();
+		else if (mPile.diskContains(l)) selected = mPile.removeTop();
+		else if (rPile.diskContains(l)) selected = rPile.removeTop();
+		else selected = null;
+	}
+	
+	public void onMouseDrag(Location l) {
+		if (selected != null) {
+			double dx = l.getX() - current.getX();
+			double dy = l.getY() - current.getY();
+			selected.move(dx, dy);
+			current = l;
+		}
 		
+	}
+	
+	public void onMouseRelease(Location l) {
+		if (selected != null) {
+			if (lPile.contains(l) && lPile.canAdd(selected)) lPile.addTop(selected);
+			else if (mPile.contains(l)&& mPile.canAdd(selected)) mPile.addTop(selected);
+			else if (rPile.contains(l)&& rPile.canAdd(selected)) rPile.addTop(selected);
+			else selected.getPile().addTop(selected);;
+		}
+		selected = null;
 	}
 	
 	// Handle the arrow keys by telling the ship to go in the direction of the arrow.
@@ -55,7 +75,6 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 
 	// Remember that the key is no longer down.
 	public void keyReleased(KeyEvent e)
-
 	{
 	}
 	// Handle the pressing of the key the same as typing.

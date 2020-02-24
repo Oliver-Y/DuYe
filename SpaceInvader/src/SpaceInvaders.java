@@ -45,7 +45,7 @@ public class SpaceInvaders extends WindowController implements KeyListener {
 	//Initialize variables
 	protected Ship ship;
 	protected Fleet fleet;
-	protected wildGnozz gnozz; 
+	protected wildGnozz gnozz;
 	protected boolean setup;
 	protected FilledRect background;
 	protected Text playGame;
@@ -63,7 +63,7 @@ public class SpaceInvaders extends WindowController implements KeyListener {
 		
 		playGame = new Text("Click to Start the Game.", WIDTH/4+30, HEIGHT/2-40, canvas);
 		playGame.setFontSize(30);
-		//Set up Text
+		//Setup Text
 		playAgain = new Text("Click to play again.", WIDTH/4+20, HEIGHT/2 + 60, canvas);
 		playAgain.setFontSize(15);
 		playAgain.setColor(Color.red);
