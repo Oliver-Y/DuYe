@@ -57,4 +57,8 @@ public class Disk {
 	public FilledRect getDiskRect() {
 		return disk;
 	}
+	
+	public void floatAnimation() {
+		
+	}
 }
