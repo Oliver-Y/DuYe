@@ -1,7 +1,6 @@
 import objectdraw.*;
-
 import java.awt.Color;
-import java.util.Stack;
+import java.util.*;
 
 //Piles manages all the disks on a single pole (graphics, logic, etc). 
 //It interacts with main ToH class.
@@ -72,10 +71,23 @@ public class Pile {
 	}
 	
 	public void wColor() {
+		ArrayList<Disk> tempL = new ArrayList<Disk>();
 		while(disks.size() > 0) {
 			Disk temp = disks.pop(); 
 			temp.getDiskRect().setColor(new Color((int)(Math.random() * 255),(int)(Math.random() * 255),(int)(Math.random() * 255))); 
 			temp.floatAnimation(); 
+			tempL.add(temp);
+		}
+		for (int i=tempL.size()-1;i>=0;i--) {
+			disks.push(tempL.get(i));
+		}
+	}
+	
+	public void selfDestruct() {
+		pole.removeFromCanvas();
+		dragRegion.removeFromCanvas();
+		while (disks.size()>0) {
+			disks.pop().getDiskRect().removeFromCanvas();
 		}
 	}
 	

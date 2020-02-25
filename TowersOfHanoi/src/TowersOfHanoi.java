@@ -1,10 +1,8 @@
 import objectdraw.*;
-import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.Stack;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class TowersOfHanoi extends WindowController implements KeyListener {
 
@@ -27,6 +25,9 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 	private FramedRect autoPlay;
 	private Text APText;
 	private MoveHistory memory;
+	private Text moves;
+	private int moveCount;
+	private Text win;
 
 	//Constants for the window
 	private static final int HEIGHT= 800;
@@ -51,6 +52,15 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 		autoPlay = new FramedRect(520, 65, 230, 25, canvas);
 		APText = new Text("Auto Play", 600, 68, canvas);
 		APText.setFontSize(15);
+		
+		moves = new Text("Number of Moves: 0",50,50, canvas);
+		moves.setFontSize(25);
+		moveCount = 0;
+		
+		new Text("Type 3-7 to change the number of disks", 270, 710, canvas);
+		
+        addKeyListener(this);
+        canvas.addKeyListener(this);
 
 		//Initialize Piles
 		lPile = new Pile(90, numDisks, canvas);
@@ -70,9 +80,9 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 		}
 		if (undo.contains(l)) {
 			memory.undo();
+			moveCount--;
 		}
 		
-
 	}
 
 	public void onMousePress(Location l) {
@@ -111,6 +121,7 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 				tempMove[1] = "l";
 				if (tempMove[0] != tempMove[1]) {
 					memory.addMove(tempMove);
+					moveCount++;
 				}
 			}
 			else if (mPile.contains(l)&& mPile.canAdd(selected)) {
@@ -118,25 +129,48 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 				tempMove[1] = "m";
 				if (tempMove[0] != tempMove[1]) {
 					memory.addMove(tempMove);
-				}			}
+					moveCount++;
+				}
+			}
 			else if (rPile.contains(l)&& rPile.canAdd(selected)) {
 				rPile.addTop(selected);
 				tempMove[1] = "r";
 				if (tempMove[0] != tempMove[1]) {
 					memory.addMove(tempMove);
+					moveCount++;
 				}
 			}
-			else selected.getPile().addTop(selected);;
+			else selected.getPile().addTop(selected);
 		}
+		
+		moves.setText("Number of Moves: " + moveCount);
 		selected = null;
 		if(win()) {
 			setWinState();
 		}
 	}
 
+	private void reset(int  num) {
+		numDisks = num;
+		lPile.selfDestruct();
+		mPile.selfDestruct();
+		rPile.selfDestruct();
+		lPile = new Pile(90, numDisks, canvas);
+		mPile = new Pile(300, 0, canvas);
+		rPile = new Pile(510, 0, canvas);
+		win.hide();
+		moveCount = 0;
+		moves.setText("Number of Moves: " + moveCount);
+	}
+	
+	
 	// Handle the arrow keys by telling the ship to go in the direction of the arrow.
 	public void keyTyped(KeyEvent e)
 	{
+		int number = Integer.parseInt(String.valueOf(e.getKeyChar()));
+		if (number > 2 && number < 8) {
+			reset(number);
+		}
 	}
 
 
@@ -152,8 +186,8 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 
 
 	//Win condition met
-	public boolean win() {
-		if(rPile.getSize() == 2)
+	private boolean win() {
+		if(rPile.getSize() == numDisks)
 			return true;
 		return false;
 
@@ -163,13 +197,13 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 		numDisks = n;
 	}
 
-	public void setWinState() {
-		new Text("Congrabalations, you've won",canvas.getHeight()/4,canvas.getWidth()/4,canvas);
+	private void setWinState() {
+		win = new Text("Congrabalations, you've won",270, 660,canvas);
+		win.setFontSize(20);
 		//Each will do something with disks on each pile?
 		lPile.wColor();
 		mPile.wColor();
 		rPile.wColor();
-
 	}
 
     public static void main(String[] args) {
@@ -186,7 +220,7 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 //    	}
 //    	s.close();
         TowersOfHanoi toh = new TowersOfHanoi();
-        toh.setDisk(2);
+        toh.setDisk(3);
         toh.startController(WIDTH, HEIGHT);
 	}
 
