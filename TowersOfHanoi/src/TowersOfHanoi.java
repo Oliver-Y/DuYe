@@ -1,8 +1,10 @@
 import objectdraw.*;
 
 import java.awt.Color;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Scanner;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -80,7 +82,7 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 		
 		new Text("Type 3-7 to change the number of disks", 270, 710, canvas);
 		
-		memory = new MoveHistory(lPile, mPile, rPile, moves);
+		memory = new MoveHistory(lPile, mPile, rPile, moves, numDisks);
 		if (load) {
 			try {
 				memory.loadGame(loadFile);
@@ -211,7 +213,7 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 		moves.setText("Number of Moves: 0");
 		notif.setText("");
 		
-		memory = new MoveHistory(lPile, mPile, rPile, moves);
+		memory = new MoveHistory(lPile, mPile, rPile, moves, numDisks);
 		iterator.pause();
 		iterator = new AutoPlay(lPile, mPile, rPile, memory);
 		autoPlaying = false;
@@ -263,15 +265,21 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 		rPile.wColor();
 	}
 
-    public static void main(String[] args) {
-        	TowersOfHanoi toh;
+    public static void main(String[] args) throws FileNotFoundException {
+        TowersOfHanoi toh;
+        int nd = 3;
     	if (args.length>0) {
+    		File f = new File(args[0]);
+    		Scanner s = new Scanner(f);
+    		nd=s.nextInt();
+    		s.close();
     		toh = new TowersOfHanoi(args[0]);
     	} else {
     		toh = new TowersOfHanoi();
     	}
+    	
 
-        toh.setDisk(3);
+        toh.setDisk(nd);
         toh.startController(WIDTH, HEIGHT);
 	}
 }
