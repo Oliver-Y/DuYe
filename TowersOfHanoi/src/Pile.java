@@ -13,12 +13,9 @@ public class Pile {
 	private Stack<Disk> disks;
 	private int topY;
 	private int center;
-	private DrawingCanvas canvas; 
 	
 	public Pile(int x, int numDisks, DrawingCanvas c) {
 		
-		canvas = c; 
-
 		//Cursor detector for dragging purposes
 		dragRegion = new FramedRect(x+25, TOP, 150, HEIGHT, c);
 		dragRegion.hide();
@@ -91,7 +88,7 @@ public class Pile {
 		}
 	}
 	
-	public int getSize(){
+	public int size(){
 		return disks.size(); 
 	}
 }
