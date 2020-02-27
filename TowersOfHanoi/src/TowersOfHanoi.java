@@ -7,6 +7,53 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+/*
+ * Thought Questions:
+ * 1. 
+ * 
+ * Hypothesis: If there were x disks, it would take 2^x - 1 moves. Let P = 2^x - 1 moves 
+ * 
+ * The next step is to prove that for x+1 disks there will be 2^x+ 1 -1 disks.
+ * Let say for x amount of disks, it takes P moves. Now, if there were x+1 amount of disks, that would mean I would first have to
+ * move x amount of disks off from the top, which would take P moves. Then I'd use extra move to move the x+1 disk to the final pole. 
+ * finally, I"d move the x amount of disks again onto the final peg, which would take P moves again. 
+ * Adding everything together, it means for x+1 disks, it would take 2P + 1 moves. 
+ * 
+ * Substituting in the value of P into the equation. 2*(2^x - 1) + 1 = 2^x+1 -1
+ * 
+ * 2. 
+ * The command line will reuse some of the autoplay functionality to automatically move Disks onto different polls. Both command line
+ * and graphical interface will also use the same backend code, meaning Stacks keep track of Disks on each poll and the checking/logic
+ * associated with storing PollStacks in the background.
+ * 
+ * 
+ * 3. the ABACABA is a recursive fractal pattern represents the solution to the Tower of Hanoi problem. 
+ * For every new disk that is introduced, the previous pattern/solution has to be repeated twice, before and after, the extra, biggest
+ * disk is added to the final pole. 
+ * 
+
+ *  A way to view this alphabet pattern is to say that with every new alphabet, the previous pattern will be repeated twice on both ends. 
+ 	For example: when the letter D is added to the pattern above, the pattern should go ABACABADABACABA
+ 	For each, ABACABA pattern repeated on both sides of D, this can be viewed as a new letter C is added, 
+ 	and ABA is repeated on both sides of the pattern. The base case would be two letters, where if B is a new letter, A is repeated on
+ 	both ends. 
+ 	
+ 	For Towers of Hanoi, When a fourth disk is added, we first have to move the first 3 disks into the middle pole. Then the fourth disk
+ * has to moved onto the final pole. When we try to move 3 disks, we can view this as moving 2 disks onto whichever 2 poles are free, 
+ * and then moving the 3rd disk onto the middle pole (since the 4th disk has to go on the final pole). Then, we can view the problem
+ * as a problem of 2 disks (moving the 2nd disk onto the right pole, freeing up the 3rd disk for the middle). 
+ * 
+ * In both Towers of Hanoi and the Alphabet example, the problem can be broken down into smaller cases until a base case, which also
+ * conforms to the recursive nature of the solution we wrote.
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
 
 public class TowersOfHanoi extends WindowController implements KeyListener {
 
