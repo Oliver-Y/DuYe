@@ -92,33 +92,20 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 	private static final int WIDTH = 800;
 	
 	public TowersOfHanoi() {}
-	public TowersOfHanoi(String f) {
+	public TowersOfHanoi(File f) {
 		load = true;
-		loadFile = f;
-		File file = new File ("/Users/oye20/Documents/GitHub/datastructures/DarwinStarter/Creatures/"+f); 
-		try {
-			Scanner s = new Scanner(file);
-			num = Integer.parseInt(s.next()); 
-			while(s.hasNext()) {
-				String temp = s.next();
-				temp.trim(); 
-				//Set temp moves + recognize Piles. 
-			
-				
-			}
-		}
-		catch(Exception e) {
-			System.out.println("file not found"); 
-		}
-
 	}
 	
 	//Initialize Disks
 	public void begin() {
 		//Initialize Piles
 		lPile = new Pile(90, numDisks, canvas);
+		lPile.setString("l");
 		mPile = new Pile(300, 0, canvas);
+		mPile.setString("m");
 		rPile = new Pile(510, 0, canvas);
+		rPile.setString("r");
+
 		
 		base = new FramedRect(50, 650, 700, 50, canvas);
 		
@@ -240,10 +227,16 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 	
 	//When reading in file, make sure to initialize start and end with the right characters
 	public void move(Pile start, Pile end) {
-		end.addTop(start.removeTop());
+		Disk temp = start.removeTop(); 
 		tempMove[0] = start.getString(); 
-		tempMove[1] = end.getString(); 
-		//doesn't check if the move is legal
+		if(end.canAdd(temp)) { 
+			end.addTop(temp);
+			tempMove[1] = end.getString(); 
+		}
+		else {
+			start.addTop(temp);
+			tempMove[1] = start.getString(); 
+		} 
 		addNcheck();
 		if(win()) setWinState(); 
 		
@@ -346,16 +339,13 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
         int nd = 3;
     	if (args.length>0) {
     		File f = new File(args[0]);
-    		Scanner s = new Scanner(f);
-    		nd=s.nextInt();
-    		s.close();
-    		toh = new TowersOfHanoi(args[0]);
+    		toh = new TowersOfHanoi(f);
     	} else {
     		toh = new TowersOfHanoi();
     	}
     	
-
         toh.setDisk(nd);
         toh.startController(WIDTH, HEIGHT);
+      //  toh.startController(WIDTH, HEIGHT);
 	}
 }
