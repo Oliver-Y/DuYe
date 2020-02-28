@@ -107,7 +107,7 @@ public class AutoPlay {
 				key.add(key.remove());
 			}
 		}
-		graphics = new AutoPlayGraphics(memory, key);
+		graphics = new AutoPlayGraphics(memory, key, 1000, false);
 	}
 	public void pause() {
 		if (graphics != null) {

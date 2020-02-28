@@ -41,12 +41,14 @@ public class MoveHistory {
 	public void loadGame(String fileName) throws FileNotFoundException{
 		File f = new File(fileName);
 		Scanner s = new Scanner(f);
+		Queue<String[]> key = new LinkedList<String[]>();
 		s.nextLine();
 		while(s.hasNextLine()) {
 			String[] move = s.nextLine().split(",");
-			redo(move);
+			key.add(move);
 		}
 		s.close();
+		new AutoPlayGraphics(this, key, 50, true);
 //		System.out.print(lPile.getSize()+""+mPile.getSize()+rPile.getSize());		
 //		while (history.size() >0) {
 //			String[] temp = history.pop();
@@ -67,7 +69,8 @@ public class MoveHistory {
 	public String[] undo(){
 		if (history.size()>0) {
 			String[] temp = history.pop();
-			undo(temp);
+			String[] undoTemp = {temp[1], temp[0]};
+			redoInternal(undoTemp);
 			numMoves.setText("Number of Moves: " + history.size());
 			return temp;
 		}
@@ -77,13 +80,12 @@ public class MoveHistory {
 	public void redo(String[] command) {
 		history.push(command);
 		numMoves.setText("Number of Moves: " + history.size());
-		String[] temp = {command[1], command[0]};
-		System.out.println(temp[0]+temp[1]);
-		undo(temp);
+		redoInternal(command);
 	}
 	
-	public void undo(String[] command) {
-		switch (command[1]) {
+	public void redoInternal(String[] command) {
+		System.out.println(command[0]+command[1]);
+		switch (command[0]) {
 		case "l":
 			source = lPile;
 			break;
@@ -95,7 +97,7 @@ public class MoveHistory {
 			break;
 		}
 		
-		switch (command[0]) {
+		switch (command[1]) {
 		case "l":
 			destination = lPile;
 			break;
