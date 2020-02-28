@@ -129,7 +129,10 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 		
 		new Text("Type 3-7 to change the number of disks", 270, 710, canvas);
 		
-		memory = new MoveHistory(lPile, mPile, rPile, moves, numDisks);
+        addKeyListener(this);
+        canvas.addKeyListener(this);
+        
+        memory = new MoveHistory(lPile, mPile, rPile, moves, numDisks);
 		if (load) {
 			try {
 				memory.loadGame(loadFile);
@@ -139,9 +142,6 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 		}
 		
 		iterator = new AutoPlay(lPile, mPile, rPile, memory);
-		
-        addKeyListener(this);
-        canvas.addKeyListener(this);
         
 	}
 
