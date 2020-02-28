@@ -1,16 +1,22 @@
 import java.awt.*;
 import objectdraw.*; 
-public class Disk {
+public class Disk extends ActiveObject {
 
 	private static final int HEIGHT = 20;
 	
 	private int size;
 	private FilledRect disk;
 	private Pile p;
+	private boolean fin; 
+	private DrawingCanvas c;
+	private int speedx = 50; 
+	private int speedy = 50; 
 	
 	public Disk(int x, int y, int size, Pile p, DrawingCanvas canvas) {
 		this.size = size;
 		this.p = p;
+		this.fin = false;
+		this.c = canvas; 
 		disk = new FilledRect(x, y, (40+size*20), HEIGHT, canvas);
 		switch (size) {
 			case 1:
@@ -59,7 +65,17 @@ public class Disk {
 	}
 	
 	public void floatAnimation() {
-		
-		
+		fin = true;
+		start(); 
+	}
+	public void run() {
+		pause(1000);
+		System.out.println(c.getWidth() + " " + c.getHeight());
+		while(fin){
+			if(disk.getX() <= 0 || disk.getX() >= c.getWidth()) speedx = -speedx; 
+			if(disk.getY() >= c.getHeight() || disk.getY() <= 0) speedy = -speedy; 
+			disk.move(speedx, speedy);
+			pause(500); 
+		}
 	}
 }

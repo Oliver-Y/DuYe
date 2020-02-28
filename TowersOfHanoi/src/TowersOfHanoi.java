@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Scanner; 
 /*
  * Thought Questions:
  * 1. 
@@ -84,6 +85,7 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 	private AutoPlay iterator;
 	private boolean autoPlaying = false;
 	private boolean hasAutoPlayed = false;
+	private int num = 3; 
 
 	//Constants for the window
 	private static final int HEIGHT= 800;
@@ -93,6 +95,22 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 	public TowersOfHanoi(String f) {
 		load = true;
 		loadFile = f;
+		File file = new File ("/Users/oye20/Documents/GitHub/datastructures/DarwinStarter/Creatures/"+f); 
+		try {
+			Scanner s = new Scanner(file);
+			num = Integer.parseInt(s.next()); 
+			while(s.hasNext()) {
+				String temp = s.next();
+				temp.trim(); 
+				//Set temp moves + recognize Piles. 
+			
+				
+			}
+		}
+		catch(Exception e) {
+			System.out.println("file not found"); 
+		}
+
 	}
 	
 	//Initialize Disks
@@ -218,6 +236,17 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 				notif.setText("Move != Best");
 			}
 		}
+	}
+	
+	//When reading in file, make sure to initialize start and end with the right characters
+	public void move(Pile start, Pile end) {
+		end.addTop(start.removeTop());
+		tempMove[0] = start.getString(); 
+		tempMove[1] = end.getString(); 
+		//doesn't check if the move is legal
+		addNcheck();
+		if(win()) setWinState(); 
+		
 	}
 
 	public void onMouseRelease(Location l) {

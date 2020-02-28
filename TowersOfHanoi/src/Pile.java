@@ -13,6 +13,7 @@ public class Pile {
 	private Stack<Disk> disks;
 	private int topY;
 	private int center;
+	private String place; 
 	
 	public Pile(int x, int numDisks, DrawingCanvas c) {
 		
@@ -86,6 +87,14 @@ public class Pile {
 		while (disks.size()>0) {
 			disks.pop().getDiskRect().removeFromCanvas();
 		}
+	}
+	
+	public void setString(String s) {
+		place = s;
+	}
+	
+	public String getString() {
+		return place;
 	}
 	
 	public int size(){
