@@ -11,12 +11,14 @@ public class MoveHistory {
 	private Pile source;
 	private Pile destination;
 	private Text numMoves;
+	private int numDisks;
 	
-	public MoveHistory(Pile l, Pile m, Pile r, Text n) {
+	public MoveHistory(Pile l, Pile m, Pile r, Text n, int nd) {
 		lPile = l;
 		mPile = m;
 		rPile = r;
 		numMoves = n;
+		numDisks = nd;
 		
 		history = new Stack<String[]>();
 	}
@@ -39,10 +41,10 @@ public class MoveHistory {
 	public void loadGame(String fileName) throws FileNotFoundException{
 		File f = new File(fileName);
 		Scanner s = new Scanner(f);
+		s.nextLine();
 		while(s.hasNextLine()) {
 			String[] move = s.nextLine().split(",");
 			redo(move);
-			history.push(move);
 		}
 		s.close();
 //		System.out.print(lPile.getSize()+""+mPile.getSize()+rPile.getSize());		
@@ -50,6 +52,7 @@ public class MoveHistory {
 //			String[] temp = history.pop();
 //			System.out.println(temp[0]+temp[1]);
 //		}
+
 		numMoves.setText("Number of Moves: " + history.size());
 	}
 	
@@ -72,11 +75,10 @@ public class MoveHistory {
 	}
 	
 	public void redo(String[] command) {
-		String[] temp = {"",""};
-		history.push(temp);
+		history.push(command);
 		numMoves.setText("Number of Moves: " + history.size());
-		temp[0]=command[1];
-		temp[1]=command[0];
+		String[] temp = {command[1], command[0]};
+		System.out.println(temp[0]+temp[1]);
 		undo(temp);
 	}
 	
@@ -106,10 +108,7 @@ public class MoveHistory {
 		}
 		destination.addTop(source.removeTop());
 	}
-	
-	public void updateCount() {
-		
-	}
+
 	
 	public Stack<String[]> getHistory() {
 		return history;
@@ -122,6 +121,7 @@ public class MoveHistory {
 //			System.out.println(history.peek()[0]+history.peek()[1]);
 			temp.add(history.pop());
 		}
+		gameFile.write(numDisks+"\n");
 		for (int i=temp.size()-1;i>=0;i--) {
 			gameFile.write(temp.get(i)[0]+","+temp.get(i)[1] + "\n");
 			

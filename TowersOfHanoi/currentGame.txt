@@ -1,0 +1,8 @@
+3
+l,m
+l,r
+r,l
+m,l
+l,r
+l,m
+r,m

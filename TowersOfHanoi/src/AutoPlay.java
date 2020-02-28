@@ -94,11 +94,9 @@ public class AutoPlay {
 			Stack<String[]> tempStack = new Stack<String[]>();
 			while (memory.getHistory().size()>flag) {
 				String[] command = memory.getHistory().pop();
+				String[] reverse = {command[1], command[0]};
+				key.add(reverse);
 				tempStack.push(command);
-				String mid = command[0];
-				command[0]=command[1];
-				command[1]=mid;
-				key.add(command);
 			}
 			
 			while (tempStack.size()>0) {
