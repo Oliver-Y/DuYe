@@ -4,7 +4,8 @@ import java.util.Scanner;
 public class CLI {
 	
 	public static void main(String[] args) {
-		 TowersOfHanoi toh; 
+		 TowersOfHanoi toh = new TowersOfHanoi();
+
 		 Scanner s = new Scanner(System.in);
 			try {
 				int num = Integer.parseInt(s.next()); 

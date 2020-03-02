@@ -22,7 +22,7 @@ import java.awt.event.KeyListener;
  * Substituting in the value of P into the equation. 2*(2^x - 1) + 1 = 2^x+1 -1
  * 
  * 2. 
- * The command line will reuse some of the autoplay functionality to automatically move Disks onto different polls. Both command line
+ * The command line will reuse some of the Autoplay functionality to automatically move Disks onto different polls. Both command line
  * and graphical interface will also use the same backend code, meaning Stacks keep track of Disks on each poll and the checking/logic
  * associated with storing PollStacks in the background.
  * 
@@ -36,15 +36,17 @@ import java.awt.event.KeyListener;
  	For example: when the letter D is added to the pattern above, the pattern should go ABACABADABACABA
  	For each, ABACABA pattern repeated on both sides of D, this can be viewed as a new letter C is added, 
  	and ABA is repeated on both sides of the pattern. The base case would be two letters, where if B is a new letter, A is repeated on
- 	both ends. 
- 	
- 	For Towers of Hanoi, When a fourth disk is added, we first have to move the first 3 disks into the middle pole. Then the fourth disk
+ 	both ends.For Towers of Hanoi, When a fourth disk is added, we first have to move the first 3 disks into the middle pole. Then the fourth disk
  * has to moved onto the final pole. When we try to move 3 disks, we can view this as moving 2 disks onto whichever 2 poles are free, 
  * and then moving the 3rd disk onto the middle pole (since the 4th disk has to go on the final pole). Then, we can view the problem
  * as a problem of 2 disks (moving the 2nd disk onto the right pole, freeing up the 3rd disk for the middle). 
  * 
+ * Another way to look at it is if A were the smallest disk, B were the 2nd smallest ect ect... the ABACABA pattern would reveal the order
+ * in which the disks had to be moved. To solve the 3 disk Tower of Hanoi, we move the smallets disk (A),the middle disk (B), the smallest disk
+ * again (A), and finally the biggest disk (C). Then we move the small, middle, and small disks again to complete the tower. 
+ * 
  * In both Towers of Hanoi and the Alphabet example, the problem can be broken down into smaller cases until a base case, which also
- * conforms to the recursive nature of the solution we wrote.
+ * conforms to the recursive nature in the autoplay solution we wrote.
  * 
  * 
  * 
@@ -74,6 +76,8 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 	private Text resetText;
 	private FramedRect autoPlay;
 	private Text APText;
+	private FramedRect stopTimer; 
+	private Text stopTimerText;
 	private MoveHistory memory;
 	private Text moves;
 	private Text win;
@@ -83,6 +87,8 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 	private AutoPlay iterator;
 	private boolean autoPlaying = false;
 	private boolean hasAutoPlayed = false;
+	private Timer t; 
+	private Text timerNotif; 
 
 	//Constants for the window
 	private static final int HEIGHT= 800;
@@ -125,8 +131,21 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 		APText = new Text("Auto Play", 600, 68, canvas);
 		APText.setFontSize(15);
 		
+		stopTimer = new FramedRect(520, 125, 230, 25, canvas);
+		stopTimerText = new Text("Toggle Timer", 590, 128, canvas);
+		stopTimerText.setFontSize(15);
+		timerNotif = new Text("Timer Paused",600,155,canvas); 
+		timerNotif.setColor(Color.RED);
+		timerNotif.hide(); 
+		
+		
+		
 		moves = new Text("Number of Moves: 0",50,50, canvas);
 		moves.setFontSize(25);
+		
+		t = new Timer(50,100,canvas); 
+		
+		//timer = new Text("")
 		
 		notif = new Text("", 592, 100, canvas);
 		notif.setFontSize(15);
@@ -159,8 +178,14 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 	}
 
 	public void onMouseClick(Location l) {
-		//Can't save or undo during auto play
-		//Can't undo after having auto played because we suck at programming
+		if(stopTimer.contains(l)) {
+			t.toggle(); 
+			if(timerNotif.isHidden()) timerNotif.show(); 
+			else {
+				timerNotif.hide(); 
+			}
+
+		}
 		if (save.contains(l) && !autoPlaying) {
 			try {
 				memory.save();
@@ -178,6 +203,7 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 		}
 		if (reset.contains(l)) {
 			reset(numDisks);
+			t.reset(); 
 			notif.setText("Game Reset");
 		}
 		if (autoPlay.contains(l)) {
@@ -340,9 +366,8 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
     	} else {
     		toh = new TowersOfHanoi();
     	}
-    	
+
         toh.setDisk(nd);
         toh.startController(WIDTH, HEIGHT);
-      //  toh.startController(WIDTH, HEIGHT);
 	}
 }
