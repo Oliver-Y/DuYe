@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Scanner; 
 /*
  * Thought Questions:
  * 1. 
