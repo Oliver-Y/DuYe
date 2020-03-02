@@ -343,6 +343,5 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
     	
         toh.setDisk(nd);
         toh.startController(WIDTH, HEIGHT);
-      //  toh.startController(WIDTH, HEIGHT);
 	}
 }
