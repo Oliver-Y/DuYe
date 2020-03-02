@@ -28,6 +28,7 @@ public class AutoPlay {
 		}
 	}
 	
+	//find middle pile given source and destination
 	private String returnMid(String source, String dest) {
 		if (source.equals("l")&&dest.equals("m")) return "r";
 		else if (source.equals("l")&&dest.equals("r")) return "m";
@@ -37,6 +38,7 @@ public class AutoPlay {
 		else return "l";
 	}
 	
+	//recursive program that finds optimal solution
 	private void figureItOut(int num, String source, String dest) {
 		if (num == 1) {
 			move(source, dest);
@@ -55,6 +57,7 @@ public class AutoPlay {
 		key.add(temp);
 	}
 	
+	//convert String to Pile
 	private Pile toPile(String s) {
 		switch (s) {
 		case "l":
@@ -67,19 +70,22 @@ public class AutoPlay {
 		return null;
 	}
 	
+	//set flag for auto play
+	//for when a wrong move is made
 	public void setFlag() {
 		flag = memory.getHistory().size();
 	}
 	
+	//check if a move is optimal
 	public boolean checkOptimal(String[] move) {
 		if (stillOptimal && key.size()>0) {
-			boolean temp = (move[0].equals(key.peek()[0]) && move[1].equals(key.peek()[1]));
-			if (!temp) {
-				stillOptimal = temp;
+			boolean result = (move[0].equals(key.peek()[0]) && move[1].equals(key.peek()[1]));
+			if (!result) {
+				stillOptimal = result;
 			} else {
 				key.remove();
 			}
-			return temp;
+			return result;
 		}
 		else return true;
 	}
@@ -88,6 +94,8 @@ public class AutoPlay {
 		key.remove();
 	}
 	
+	// initialize auto play by creating an active object
+	// auto play can be called after loading from file, whether the moves saved in file are optimal or not (Counts as an extension?)
 	public void startPlaying() {
 		if (!stillOptimal) {
 			int temp = key.size();
@@ -107,12 +115,19 @@ public class AutoPlay {
 				key.add(key.remove());
 			}
 		}
-		graphics = new AutoPlayGraphics(memory, key, 1000, false);
+		graphics = new AutoPlayGraphics(memory, key, 1000, false, this);
 	}
+	
+	// pause auto play 
+	// player can pause and un-pause and make moves in between without bugging the game out. (Counts as an extension?)
 	public void pause() {
 		if (graphics != null) {
 			graphics.pause();
 		}
+	}
+	
+	public Queue<String[]> getKey() {
+		return key;
 	}
 
 }

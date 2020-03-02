@@ -12,6 +12,7 @@ public class MoveHistory {
 	private Pile destination;
 	private Text numMoves;
 	private int numDisks;
+	private AutoPlay iterator;
 	
 	public MoveHistory(Pile l, Pile m, Pile r, Text n, int nd) {
 		lPile = l;
@@ -23,21 +24,11 @@ public class MoveHistory {
 		history = new Stack<String[]>();
 	}
 	
-//	public MoveHistory(Pile l, Pile m, Pile r, String filename) throws FileNotFoundException {
-//		lPile = l;
-//		mPile = m;
-//		rPile = r;
-//		
-//		File f = new File(filename);
-//		Scanner s = new Scanner(f);
-//		history = new Stack<String[]>();
-//		
-//		while(s.hasNextLine()) {
-//			history.push(s.nextLine().split(","));
-//		}
-//		s.close();
-//	}
-	
+	public void setIterator(AutoPlay i) {
+		iterator = i;
+	}
+
+	//loadGame using AutoPlayGraphics
 	public void loadGame(String fileName) throws FileNotFoundException{
 		File f = new File(fileName);
 		Scanner s = new Scanner(f);
@@ -48,16 +39,12 @@ public class MoveHistory {
 			key.add(move);
 		}
 		s.close();
-		new AutoPlayGraphics(this, key, 50, true);
-//		System.out.print(lPile.getSize()+""+mPile.getSize()+rPile.getSize());		
-//		while (history.size() >0) {
-//			String[] temp = history.pop();
-//			System.out.println(temp[0]+temp[1]);
-//		}
+		new AutoPlayGraphics(this, key, 100, true, iterator);
 
 		numMoves.setText("Number of Moves: " + history.size());
 	}
 	
+	//add move to history
 	public void addMove(String[] a){
 		String[] temp = {"x", "x"};
 		temp[0] = a[0];
@@ -66,6 +53,7 @@ public class MoveHistory {
 		numMoves.setText("Number of Moves: " + history.size());
 	}
 	
+	//undo a move
 	public String[] undo(){
 		if (history.size()>0) {
 			String[] temp = history.pop();
@@ -77,14 +65,22 @@ public class MoveHistory {
 		return null;
 	}
 	
+	//perform a move
 	public void redo(String[] command) {
 		history.push(command);
 		numMoves.setText("Number of Moves: " + history.size());
 		redoInternal(command);
 	}
 	
+	//perform a move for loading
+	public void redoLoad(String[] command) {
+		if (!iterator.checkOptimal(command)) {
+			iterator.setFlag();
+		}
+		redo(command);
+	}
+	
 	public void redoInternal(String[] command) {
-		System.out.println(command[0]+command[1]);
 		switch (command[0]) {
 		case "l":
 			source = lPile;
@@ -116,11 +112,11 @@ public class MoveHistory {
 		return history;
 	}
 	
+	//save move history to file
 	public void save() throws IOException {
 		FileWriter gameFile = new FileWriter("currentGame.txt");
 		ArrayList<String[]> temp = new ArrayList<String[]>();
 		while (history.size()>0) {
-//			System.out.println(history.peek()[0]+history.peek()[1]);
 			temp.add(history.pop());
 		}
 		gameFile.write(numDisks+"\n");

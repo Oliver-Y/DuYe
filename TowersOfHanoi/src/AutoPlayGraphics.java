@@ -7,30 +7,37 @@ public class AutoPlayGraphics extends ActiveObject{
 	private Queue<String[]> key; 
 	private boolean stop = false;
 	private int pace;
-	private boolean buffer;
+	private boolean loading;
+	private AutoPlay iterator;
 	
-	public AutoPlayGraphics(MoveHistory h, Queue<String[]> k, int p, boolean b) {
+	public AutoPlayGraphics(MoveHistory h, Queue<String[]> k, int p, boolean l, AutoPlay i) {
 		memory = h;
 		key = k;
 		pace = p;
-		buffer = b;
-		if (buffer) {
+		loading = l;
+		if (loading) {
 			pause(500);
 		}
+		iterator = i;
 		start();
 	}
 	
 	public void run() {
 		while (key.size()>0 && !stop) {
 			pause(pace);
-			memory.redo(key.remove());
+			String[] temp = key.remove();
+			if (loading) {
+				memory.redoLoad(temp);
+			} else {
+				memory.redo(temp);
+			}
+		}
+		if (!loading) {
+			iterator.setFlag();
 		}
 	}
 	
 	public void pause() {
 		stop = true;
 	}
-	
-	
-	
 }

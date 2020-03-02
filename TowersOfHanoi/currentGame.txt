@@ -1,15 +1,8 @@
-7
-l,r
+4
 l,m
-r,m
 l,r
-m,l
 m,r
-l,r
 l,m
-r,m
 r,l
-m,l
-r,m
-l,r
 l,m
+r,l

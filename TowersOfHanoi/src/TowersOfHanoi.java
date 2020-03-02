@@ -64,7 +64,6 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 
 	//Other initializations
 	private int numDisks;
-	private FramedRect base;
 	private String[] tempMove= {"0","0"};
 	private Location current;
 	private Disk selected;
@@ -85,7 +84,6 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 	private AutoPlay iterator;
 	private boolean autoPlaying = false;
 	private boolean hasAutoPlayed = false;
-	private int num = 3; 
 
 	//Constants for the window
 	private static final int HEIGHT= 800;
@@ -95,32 +93,18 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 	public TowersOfHanoi(String f) {
 		load = true;
 		loadFile = f;
-		File file = new File ("/Users/oye20/Documents/GitHub/datastructures/DarwinStarter/Creatures/"+f); 
-		try {
-			Scanner s = new Scanner(file);
-			num = Integer.parseInt(s.next()); 
-			while(s.hasNext()) {
-				String temp = s.next();
-				temp.trim(); 
-				//Set temp moves + recognize Piles. 
-			
-				
-			}
-		}
-		catch(Exception e) {
-			System.out.println("file not found"); 
-		}
-
 	}
 	
 	//Initialize Disks
-	public void begin() {
+	public void begin() {	
+		//Setup GUI of game
 		//Initialize Piles
 		lPile = new Pile(90, numDisks, canvas);
 		mPile = new Pile(300, 0, canvas);
 		rPile = new Pile(510, 0, canvas);
 		
-		base = new FramedRect(50, 650, 700, 50, canvas);
+		//Base
+		new FramedRect(50, 650, 700, 50, canvas);
 		
 		save = new FramedRect(520, 30, 70, 25, canvas);
 		saveText = new Text("Save", 539, 33, canvas);
@@ -150,7 +134,17 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
         addKeyListener(this);
         canvas.addKeyListener(this);
         
+        
+        // Setup memory that keeps track of move history
         memory = new MoveHistory(lPile, mPile, rPile, moves, numDisks);
+        
+        // Setup iterator with optimal solution
+        iterator = new AutoPlay(lPile, mPile, rPile, memory);
+        
+        //feed iterator to memory
+        memory.setIterator(iterator);
+		
+        //Check loading
 		if (load) {
 			try {
 				memory.loadGame(loadFile);
@@ -158,12 +152,12 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 				e.printStackTrace();
 			}
 		}
-		
-		iterator = new AutoPlay(lPile, mPile, rPile, memory);
         
 	}
 
 	public void onMouseClick(Location l) {
+		//Can't save or undo during auto play
+		//Can't undo after having auto played because we suck at programming
 		if (save.contains(l) && !autoPlaying) {
 			try {
 				memory.save();
@@ -193,11 +187,11 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 				autoPlaying = false;
 				notif.setText("Auto Play Paused");
 				iterator.pause();
-				iterator.setFlag();
 			}
 		}
 	}
 	
+	//Drag & drop mechanism
 	public void onMousePress(Location l) {
 		current = l;
 		if (lPile.diskContains(l)) {
@@ -226,29 +220,7 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 			current = l;
 		}
 	}
-	
-	private void addNcheck() {
-		if (tempMove[0] != tempMove[1]) {
-			memory.addMove(tempMove);
-			if (iterator.checkOptimal(tempMove)) {
-				notif.setText("");
-			} else {
-				notif.setText("Move != Best");
-			}
-		}
-	}
-	
-	//When reading in file, make sure to initialize start and end with the right characters
-	public void move(Pile start, Pile end) {
-		end.addTop(start.removeTop());
-		tempMove[0] = start.getString(); 
-		tempMove[1] = end.getString(); 
-		//doesn't check if the move is legal
-		addNcheck();
-		if(win()) setWinState(); 
 		
-	}
-
 	public void onMouseRelease(Location l) {
 		if (selected != null) {
 			if (lPile.contains(l) && lPile.canAdd(selected)) {
@@ -273,7 +245,20 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 			setWinState();
 		}
 	}
+	
+	//move disk & check for optimal move
+	private void addNcheck() {
+		if (tempMove[0] != tempMove[1]) {
+			memory.addMove(tempMove);
+			if (iterator.checkOptimal(tempMove)) {
+				notif.setText("");
+			} else {
+				notif.setText("Move != Best");
+			}
+		}
+	}
 
+	//reset game
 	private void reset(int  num) {
 		numDisks = num;
 		lPile.selfDestruct();
@@ -296,7 +281,6 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 		hasAutoPlayed = false;
 
 	}
-	
 	
 	// Handle the arrow keys by telling the ship to go in the direction of the arrow.
 	public void keyTyped(KeyEvent e)
@@ -335,7 +319,6 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 	private void setWinState() {
 		win = new Text("Congrabalations, you've won",270, 660,canvas);
 		win.setFontSize(20);
-		//Each will do something with disks on each pile?
 		lPile.wColor();
 		mPile.wColor();
 		rPile.wColor();
@@ -354,7 +337,6 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
     		toh = new TowersOfHanoi();
     	}
     	
-
         toh.setDisk(nd);
         toh.startController(WIDTH, HEIGHT);
 	}
