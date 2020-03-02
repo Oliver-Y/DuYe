@@ -100,8 +100,12 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 		//Setup GUI of game
 		//Initialize Piles
 		lPile = new Pile(90, numDisks, canvas);
+		lPile.setString("l");
 		mPile = new Pile(300, 0, canvas);
+		mPile.setString("m");
 		rPile = new Pile(510, 0, canvas);
+		rPile.setString("r");
+
 		
 		//Base
 		new FramedRect(50, 650, 700, 50, canvas);
@@ -220,7 +224,8 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
 			current = l;
 		}
 	}
-		
+
+
 	public void onMouseRelease(Location l) {
 		if (selected != null) {
 			if (lPile.contains(l) && lPile.canAdd(selected)) {
@@ -339,5 +344,6 @@ public class TowersOfHanoi extends WindowController implements KeyListener {
     	
         toh.setDisk(nd);
         toh.startController(WIDTH, HEIGHT);
+      //  toh.startController(WIDTH, HEIGHT);
 	}
 }
